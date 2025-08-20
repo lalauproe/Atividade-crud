@@ -45,19 +45,29 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Titulo</th>
+                                <th>Cód</th>
+                                <th>Título</th>
                                 <th>Descrição</th>
                                 <th>Criado em</th>
                                 <th>Ação</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Atividade</td>
-                                <td>Descrição</td>
-                                <td>15-08-2025</td>
+                            <?php
+                            require_once 'conn.php';
+
+                            $query = "SELECT id, title, description, created_at
+                            FROM crud_php";
+                            $result = $conn->query($query);
+
+                            if ($result->num_rows > 0){
+                                while($row = $result->fetch_assoc()){
+                            ?>
+                              <tr>
+                                <td><?php echo $row['id']; ?></td>
+                                <td><?php echo $row ['title']; ?></td>
+                                <td><?php echo $row ['description']; ?></td>
+                                <td><?php echo $row ['created_at']; ?></td>
                                 <td><a href="#" class="btn btn-secondary">
                                         <i class="fas fa-marker"></i>
                                     </a>
@@ -66,6 +76,13 @@
                                     </a>
                                 </td>
                             </tr>
+                            <?php
+                                }
+                            } else {
+                                echo "<tr><td colspan='5'>Nenhuma tarefa encontrada!</td></tr>";
+                            }
+                            $conn->close();
+                            ?>   
                         </tbody>
                     </table>
                 </div>

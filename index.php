@@ -1,3 +1,13 @@
+<?php
+
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -18,13 +28,25 @@
         <nav class="navbar navbar-light bg-light">
             <div class="container">
                 <a class="navbar-brand" href="index.php">Crud PHP</a>
-                <form action="login.php" method="GET" class="d-inline">
+                <form action="logout.php" method="POST" class="d-inline">
                     <button type="submit" class="btn btn-secondary">
-                        <i class="fas fa-sign-out-alt"></i>Logout
+                        <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
                 </form>
             </div>
         </nav>
+        <!-- Mensagens -->
+        <?php if (isset($_SESSION['message']) && isset($_SESSION['message_type'])): ?>
+            <div class="alert alert-<?= $_SESSION['message_type']; ?> alert-dismissible fade show" role="alert">
+                <?= $_SESSION['message']; ?>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php unset($_SESSION['message']);
+            unset($_SESSION['message_type']);
+        endif; ?>
+        <!-- /Mensagens -->
         <main class="container p-4">
             <div class="row">
                 <div class="col-md-4">
@@ -33,7 +55,7 @@
                         <form action="save.php" method="POST">
                             <div class="form-group">
                                 <input type="text" name="title" class="form-control"
-                                    placeholder="Titulo da tarefa" autofocus>
+                                    placeholder="Titulo da tarefa" autofocus required>
                             </div>
                             <div class="form-group">
                                 <textarea name="description" rows="2" class="form-control" placeholder="Descrição"></textarea>
@@ -61,33 +83,33 @@
                             <?php
                             require_once 'conn.php';
 
-                            $query = "SELECT id, title, description, created_at
+                            $query = "SELECT id, title, description, created_at 
                             FROM crud_php";
                             $result = $conn->query($query);
 
-                            if ($result->num_rows > 0){
-                                while($row = $result->fetch_assoc()){
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
                             ?>
-                              <tr>
-                                <td><?php echo $row['id']; ?></td>
-                                <td><?php echo $row ['title']; ?></td>
-                                <td><?php echo $row ['description']; ?></td>
-                                <td><?=date("d/m/Y H:i:s", strtotime($row ['created_at'])); ?></td>
-                                <td><a href="edit.php?id=<?=$row['id']; ?>" class="btn btn-secondary">
-                                        <i class="fas fa-marker"></i>
-                                    </a>
-                                    <a href="delete.php?id=<?=$row['id']; ?>" class="btn btn-danger">
-                                        <i class="far fa-trash-alt"></i>
-                                    </a>
-                                </td>
-                            </tr>
+                                    <tr>
+                                        <td><?php echo $row['id']; ?></td>
+                                        <td><?php echo $row['title']; ?></td>
+                                        <td><?= substr($row['description'], 0, 20) . '...' ?></td>
+                                        <td><?= date("d/m/Y", strtotime($row['created_at'])); ?></td>
+                                        <td><a href="edit.php?id=<?= $row['id']; ?>" class="btn btn-secondary">
+                                                <i class="fas fa-marker"></i>
+                                            </a>
+                                            <a href="delete.php?id=<?= $row['id']; ?>" class="btn btn-danger">
+                                                <i class="far fa-trash-alt"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
                             <?php
                                 }
                             } else {
                                 echo "<tr><td colspan='5'>Nenhuma tarefa encontrada!</td></tr>";
                             }
                             $conn->close();
-                            ?>   
+                            ?>
                         </tbody>
                     </table>
                 </div>
@@ -100,6 +122,14 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script>
+        setTimeout(() => {
+            const alert = document.querySelector('.alert');
+            if (alert) {
+                alert.style.display = 'none';
+            }
+        }, 5000);
+    </script>
 </body>
 
 </html>

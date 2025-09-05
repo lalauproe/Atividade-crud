@@ -1,9 +1,16 @@
 <?php
 
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+}
+
 require_once 'conn.php';
 
 try {
-    if($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $id = isset($_POST['id']) ? $_POST['id'] : null;
         $title = isset($_POST['title']) ? $_POST['title'] : null;
         $description = isset($_POST['description']) ? $_POST['description'] : null;
@@ -16,23 +23,30 @@ try {
                 $stmt->bind_param("ssi", $title, $description, $id);
 
                 if ($stmt->execute()) {
+                    $_SESSION['message'] = "Tarefa atualizada com sucesso!";
+                    $_SESSION['message_type'] = "primary";
                     header("Location: index.php");
                     exit();
                 } else {
-                    throw new Exception("Erro ao atualizar a atualização: " . $stmt->error);
+                    $_SESSION['message'] = "Erro ao atualizar a tarefa.";
+                    $_SESSION['message_type'] = "danger";
+                    throw new Exception("Erro ao executar a atualização: " . $stmt->error);
                 }
                 $stmt->close();
             } else {
-                throw new Exception("Erro ao preparar a consulta " . $conn->error);
+                throw new Exception("Erro ao preparar a consulta: " . $conn->error);
             }
         } else {
-            throw new Exception("O campo 'titulo' é obrigatório!");
+            throw new Exception("O campo 'Titulo' é obrigatório!");
         }
     } else {
-            throw new Exception("Método de requisição inválido!");
-        }
+        throw new Exception("Método de requisição inválido!");
+    }
 } catch (Exception $e) {
-    echo "Erro: " . $e->getMessage();
+    $_SESSION['message'] = $e->getMessage();
+    $_SESSION['message_type'] = "danger";
+    header("Location: index.php");
+    exit();
 } finally {
     $conn->close();
 }

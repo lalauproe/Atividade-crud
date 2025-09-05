@@ -16,27 +16,29 @@
             <div class="col-md-4">
                 <div class="card card-body mt-5">
                     <h3 class="text-center">Login</h3>
-                    <form action="authentic.php" method="POST">
+                    <form action="authenticate.php" method="POST">
                         <div class="form-group">
                             <input type="email" name="email" id="email" class="form-control"
                                 placeholder="exemplo@email.com" required>
                         </div>
                         <div class="form-group">
-                            <input type="password" class="form-control" id="password" name="password"
-                                placeholder="*********" required>
+                            <input type="password" name="password" id="password" class="form-control"
+                                placeholder="********" required>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+                         <button type="submit" class="btn btn-success btn-block">Entrar</button>
                     </form>
-                    <p class="text-center mt-3">
-                        <a href="register.php" class="text-secondary">Cadastrar-se</a>
-                    </p>
+                    <div class="text-center mt-3">
+                        <a href="register.php" class="text-secondary">Cadastre-se</a>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
 </body>
 
 </html>

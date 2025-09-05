@@ -1,11 +1,21 @@
 <?php
 
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+}
+
 require_once 'conn.php';
 
 $id = isset($_GET['id']) ? $_GET['id'] : null;
 
 if (!$id) {
     echo "ID da tarefa não fornecido!";
+    $_SESSION['message'] = "ID da tarefa não fornecido!";
+    $_SESSION['message_type'] = "danger";
+    header('Location: index.php');
     exit();
 }
 
@@ -26,10 +36,13 @@ try {
         }
         $stmt->close();
     } else {
-        throw new Exception("Erro ao preparar a consulta " . $conn->error);
+        $_SESSION['message'] = "Erro ao preparar a consulta.";
+        $_SESSION['message_type'] = "danger";
+        header('Location: index.php');
+        exit();
     }
 } catch (Exception $e) {
-    echo "Erro: " . $e->getMessage();
+    echo "Erro " . $e->getMessage();
     exit();
 }
 
@@ -55,6 +68,11 @@ try {
         <nav class="navbar navbar-light bg-light">
             <div class="container">
                 <a class="navbar-brand" href="index.php">Crud PHP</a>
+                <form action="logout.php" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
             </div>
         </nav>
 
@@ -63,12 +81,12 @@ try {
                 <div class="col-md-6 mx-auto">
                     <div class="card card-body">
                         <form action="update.php" method="POST">
-                            <input type="hidden" name="id" value="<?php echo $task ['id']; ?>">
+                            <input type="hidden" name="id" value="<?php echo $task['id']; ?>">
                             <div class="form-group">
-                                <input type="text" name="title" class="form-control" value="<?php echo $task ['title']; ?>">
+                                <input type="text" name="title" class="form-control" value="<?php echo $task['title']; ?>">
                             </div>
                             <div class="form-group">
-                                <textarea name="description" rows="2" class="form-control"><?php echo $task ['description']; ?></textarea>
+                                <textarea name="description" rows="2" class="form-control"><?php echo $task['description']; ?></textarea>
                             </div>
                             <button class="btn btn-success btn-block" type="submit">Atualizar</button>
                             <a href="index.php" class="btn btn-secondary btn-block">Cancelar</a>
